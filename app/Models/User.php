@@ -40,6 +40,27 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password' => 'hashed',
     ];
+
+    public function AuthorizationGroup()
+    {
+        return $this->belongsToMany(
+            'App\Models\AuthorizationGroup',
+            'cms_user_auth_groups',
+            'user_id',
+            'group_id',
+            'id'
+        );
+    }
+ 
+    public function UserAuthGroup()
+    {
+        return $this->hasMany('App\Models\UserAuthGroup', 'user_id', 'id');
+    }
+
+
+    public function Authorizations()
+    {
+        return $this->belongsToMany(AuthorizationGroup::class, 'cms_user_auth_groups', 'user_id', 'group_id');
+    }
 }

@@ -10,11 +10,28 @@
         "@tailwindcss/forms": "^0.5.3",
         "@vitejs/plugin-vue": "^5.0.0",
         "autoprefixer": "^10.4.12",
-        "axios": "^1.6.4",
+        "axios": "^1.7.4",
         "laravel-vite-plugin": "^1.0.0",
         "postcss": "^8.4.31",
         "tailwindcss": "^3.2.1",
+        "typescript": "^5.5.4",
         "vite": "^5.0.0",
         "vue": "^3.4.0"
+    },
+    "dependencies": {
+        "@vee-validate/zod": "^4.13.2",
+        "@vueuse/core": "^10.11.1",
+        "class-variance-authority": "^0.7.0",
+        "clsx": "^2.1.1",
+        "embla-carousel-vue": "^8.1.8",
+        "lucide-vue-next": "^0.427.0",
+        "radix-vue": "^1.9.4",
+        "tailwind-merge": "^2.5.2",
+        "tailwindcss-animate": "^1.0.7",
+        "vee-validate": "^4.13.2",
+        "vue-carousel": "^0.18.0",
+        "vue-router": "^4.4.3",
+        "vuex": "^4.1.0",
+        "zod": "^3.23.8"
     }
 }
