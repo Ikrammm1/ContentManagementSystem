@@ -66,22 +66,25 @@ class AuthController extends Controller
             ];
         });
 
-        return response()->json([
-            'user' => $user,
-            'menus' => $menuData
-        ]);
+        // return response()->json([
+        //     'users' => $user,
+        //     'menus' => $menuData
+        // ]);
         // $auth = AuthorizationGroup::with('Menu');
 
         // $user = MenuAuthGroup::where('email', $request->email)->with(['AuthorizationGroup' => function($query){
         //     $query->whereHas
         // }]);
 
-        return $user;
+        // return $user;
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
             'status' => 'success',
+            'token' => $token,
             'datas' => $user,
+            'menus' => $menuData
+            
         ]);
         // return response()->json([
         //     'access_token' => $token,

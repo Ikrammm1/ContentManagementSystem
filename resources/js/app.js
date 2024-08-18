@@ -8,6 +8,9 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 import router from './router.js';
 import store from './Store';
+import Notifications from '@kyvg/vue3-notification'
+import VueSidebarMenu from 'vue-sidebar-menu'
+import 'vue-sidebar-menu/dist/vue-sidebar-menu.css'
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -19,6 +22,8 @@ createInertiaApp({
             .use(plugin)
             .use(router)
             .use(store)
+            .use(Notifications)
+            .use(VueSidebarMenu)
             .use(ZiggyVue)
             .mount(el);
     },

@@ -1,18 +1,18 @@
 
 
 <template>
-  <div class="min-h-screen  flex  sm:justify-center items-center pt-6 sm:pt-0 bg-gray-200">
-
-        <Card class="w-full sm:w-2/3">
+  <div class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50"
+  v-if="formData.splash">
+    <VueSpinner size="50" color="orange" />
+  </div>
+  <div class="min-h-screen  flex  justify-center items-center pt-6 sm:pt-0 bg-gray-200">
+    
+        <Card class="md:w-2/3 sm:w-2/3">
           <div class="flex flex-row " >
-            <div class="w-1/2 flex flex-col items-center justify-center hidden sm:flex md:flex">
-              <!-- <Avatar >
-                <AvatarImage src="https://github.com/radix-vue.png" alt="@radix-vue" />
-                <AvatarFallback>CN</AvatarFallback>
-              </Avatar> -->
+            <div class="w-1/2 flex flex-col items-center justify-center hidden md:flex sm:flex">
               <img src="https://static.vecteezy.com/system/resources/thumbnails/007/721/351/small_2x/work-from-home-illustration-concept-man-working-on-laptop-at-home-vector.jpg"/>
             </div>
-            <div class="w-full sm:w-1/2 md:w-1/2 flex flex-col m-3 ">
+            <div class="w-full md:w-1/2 sm:1/2 flex flex-col m-3 ">
               <CardHeader>
                 <CardTitle>Login</CardTitle>
                 <CardDescription>Login to access your account and enjoy our features.</CardDescription>
@@ -102,6 +102,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/Components/ui/select'
+import {
+  VueSpinner,
+} from 'vue3-spinners';
 import { Input } from '@/Components/ui/input'
 import { Label } from '@/Components/ui/label'
 import { Button } from '@/Components/ui/button'
@@ -112,29 +115,46 @@ import { useStore } from 'vuex';
 import { reactive } from 'vue';
 import { useRouter} from 'vue-router';
 
+import { useNotification } from "@kyvg/vue3-notification";
+
+
 
 const formData = reactive({
   email: '',
   password: '',
-  checkbox_remember_me: false
+  checkbox_remember_me: false,
+  splash:false
 });
 
 const store = useStore();
 const router = useRouter();
-
-const user = computed(() => store.state.user);
+const { notify }  = useNotification()
+// const user = computed(() => store.state.user);
 
 function LoginFunc() {
-  // console.log(formData)
-console.log(router.getRoutes());
-
+  formData.splash = true;
   store.dispatch('auth/store', formData)
     .then((response) => {
-      console.log('Item saved successfully:', response);
+      // console.log(response.data.token)
+      const token = response.data.token;
+      localStorage.setItem('authToken', token);
       router.push({ name: 'Dashboard' });
+      formData.splash = false
+      notify({
+        title: "Success",
+        type: 'success',
+        duration: 2000
+      });
     })
     .catch((error) => {
       console.error('Error saving item:', error);
+      formData.splash = false
+       notify({
+        title: "Error!",
+        text: "Wrong email or password",
+        type: 'error',
+        duration: 2000
+      });
     });
 }
 

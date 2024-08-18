@@ -16,7 +16,7 @@ const routes = [
   },
   {
     path: '/',
-    name: 'Landing',
+    name: 'Login',
     component: () => import("./Pages/Landing.vue"),
   },
 ];
@@ -24,6 +24,17 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+});
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem('authToken');
+
+  if (to.name !== 'Login' && !token) {
+    next({ name: 'Login' });
+  } else if (to.name === 'Login' && token) {
+    next({ path: '/dash' });
+  } else {
+    next();
+  }
 });
 
 export default router;

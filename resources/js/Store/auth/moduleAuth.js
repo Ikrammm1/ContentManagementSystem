@@ -1,14 +1,31 @@
 import axios from "../../http/axios/index.js"
 
 const state = {
-  datas: [],
-  menus: []
+  token: localStorage.getItem('authToken') || '',
+  userData: null,
+  userMenus: null
 };
 
 const mutations = {
-  ADD_ITEM(state, item) {
-    state.iceCreamSettings.push(item);
-  }
+  SET_USERS(state, user) {
+    state.userData = user;
+    localStorage.setItem('userData', JSON.stringify(user));
+
+  },
+  SET_MENUS(state, menu) {
+    state.userMenus =menu;
+    localStorage.setItem('userMenus', JSON.stringify(menu));
+
+  },
+  SET_TOKEN(state, token) {
+    state.token = token;
+    localStorage.setItem('authToken', token);
+
+    // Set token to Axios headers
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  },
+
+  
 };
 
 const actions = {
@@ -21,7 +38,9 @@ const actions = {
         }
       })
         .then(response => {
-          // commit('ADD_ITEM', Object.assign(item, { id: response.data[0] }));
+          commit('SET_USERS', response.data.datas)          
+          commit('SET_MENUS', response.data.menus)          
+          commit('SET_TOKEN', response.data.token)          
           resolve(response);
         })
         .catch(error => {
@@ -32,7 +51,8 @@ const actions = {
 };
 
 const getters = {
-  allSettings: state => state.iceCreamSettings
+  // userData: state => state.userData,
+  // userMenus: state => state.userMenus
 };
 
 export default {
@@ -40,5 +60,5 @@ export default {
   state,
   mutations,
   actions,
-  getters
+  // getters
 };
