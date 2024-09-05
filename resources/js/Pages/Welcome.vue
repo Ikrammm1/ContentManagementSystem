@@ -1,37 +1,95 @@
 <template>
-  <!-- <div id="app"> -->
-    <nav-menu :menu="menu" />
-    <!-- <router-view /> -->
-  <!-- </div> -->
+  <div class="flex flex-row">
+    <nav-menu 
+      :menu="menu" 
+      :user="user"  
+      v-on:sidebarStatusChanged="isSidebarActive" 
+    />
+    <div  
+    class="justify-start items-center" 
+    :style="topBarStyle">
+      <top-bar />
+      <router-view/>
+    </div>
+  </div>
 </template>
 
+
 <script>
-// import FeatherIcon from '../Components/FeatherIcon.vue';// Pastikan path benar
 import NavMenu from '../Layouts/NavMenu.vue'; // Pastikan path benar
-import feather from 'feather-icons';
+import TopBar from '../Layouts/topBar.vue'; // Pastikan path benar
 
 export default {
   components: {
-    // FeatherIcon,
-    NavMenu
+    NavMenu,
+    TopBar
   },
   data() {
     return {
-      menu: []
+      user: null,
+      menu: [],
+      isSidebar: true,
+      formData: new FormData(),
     };
+  },
+  computed: {
+    topBarStyle() {
+      // console.log(this.isSidebar)
+      return {
+        width: this.isSidebar ? 'calc(100% - 250px)' : '100%',
+        marginLeft: this.isSidebar ? '250px' : '0',
+        transition: 'margin-left 0.3s ease, width 0.3s ease'
+      };
+    }
+  },
+  methods: {
+    isSidebarActive(isOpen) {
+      // console.log("Event received in main.vue with value:", isOpen);
+      this.isSidebar = isOpen;
+    },
+    handleResize() {
+      // Menutup sidebar jika lebar layar berada di bawah ukuran col-md (768px)
+      this.isSidebar = window.innerWidth >= 768;
+    }
   },
   created() {
     // Ambil data dari localStorage
-    const menus = localStorage.getItem('userMenus');
+    const user = localStorage.getItem('userData');
+    const parsedUser = JSON.parse(user);
+    this.formData = new FormData();
+    this.formData.append("id", parsedUser.id);
+    this.$store.dispatch("menuManagement/authlist", this.formData)
+      .then((response)=>{
+        this.menu = response;
+      });
 
-    // Parse JSON jika data ada
-    if (menus) {
-      this.menu = JSON.parse(menus);
+    if (user) {
+      this.user = JSON.parse(user);
     }
+  },
+  mounted() {
+    window.addEventListener('resize', this.handleResize);
+    this.handleResize(); // Panggil sekali saat komponen di-mount untuk memastikan status sidebar benar
+    // console.log(this.handleResize)
+    // console.log(this.isSidebar)
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.handleResize);
   }
 };
 </script>
 
 <style>
-/* Tambahkan styling global jika diperlukan */
+.top-bar {
+  transition: margin-left 0.3s ease, width 0.3s ease;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.ml-[nav-width] {
+  margin-left: 250px; 
+  width: calc(100% - 250px);
+}
 </style>
