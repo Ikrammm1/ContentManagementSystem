@@ -3,7 +3,7 @@
 <template>
   <div class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50"
   v-if="formData.splash">
-    <VueSpinner size="50" color="orange" />
+    <VueSpinner size="50" color="gray-900" />
   </div>
   <div class="min-h-screen  flex  justify-center items-center pt-6 sm:pt-0 bg-gray-200">
     
@@ -43,7 +43,7 @@
                       
                       <div class="flex flex-col ml-auto justify-center">
                         <a href="#" >
-                          <p class="text-sm text-orange-500">
+                          <p class="text-sm text-gray-800">
                             Forget Password?
                           </p>
                         </a>
@@ -59,7 +59,7 @@
                   Cancel
                 </Button> -->
                 <div class="p-5">
-                  <Button class="w-full" type="submit" @click="LoginFunc()">Login</Button>
+                  <Button class="w-full bg-gray-800 hover:bg-gray-600" type="submit" @click="LoginFunc()">Login</Button>
                   <Button variant="outline" class="flex w-full mt-3">
                     <!-- <Avatar class="p-3"> -->
                       <img class="w-6 h-auto" 

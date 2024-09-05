@@ -3,7 +3,8 @@ import axios from "../../http/axios/index.js"
 const state = {
   token: localStorage.getItem('authToken') || '',
   userData: null,
-  userMenus: null
+  userMenus: null,
+  menus:[]
 };
 
 const mutations = {
@@ -13,7 +14,9 @@ const mutations = {
 
   },
   SET_MENUS(state, menu) {
-    state.userMenus =menu;
+    state.userMenus = menu;
+    state.menus = menu;
+    // console.log(menu)
     localStorage.setItem('userMenus', JSON.stringify(menu));
 
   },
@@ -50,10 +53,10 @@ const actions = {
   }
 };
 
-const getters = {
-  // userData: state => state.userData,
-  // userMenus: state => state.userMenus
-};
+// const getters = {
+//   user: state => state.userData,
+//   menus: state => state.userMenus
+// };
 
 export default {
   namespaced: true,
