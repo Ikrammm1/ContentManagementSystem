@@ -1,5 +1,7 @@
 <!-- src/components/SidebarMain.vue -->
 <template>
+   <div class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-9999 "
+   v-if="splash"></div>
   <div>
     <!-- Overlay dengan efek fade -->
     <transition name="fade" appear>
@@ -30,67 +32,91 @@
               </button>
           </div>
         </div>
+      
 
-        <!-- Content -->
-        <div class="content">
-          <div class="form-container">
-            <!-- Form fields here -->
-            <div class="form-group">
-              <Label for="name">Menu Name</Label>
-              <Input id="name" class="mt-2" placeholder="name" type="text" v-model="name" />
-            </div>
-            <div class="form-group">
-              <Label for="category">Category</Label>
-              <!-- <Input id="category" class="mt-2" placeholder="category" type="text" v-model="category" /> -->
-              <select id="selectedCategory" v-model="selectedCategory" class="mt-2 border rounded p-2 w-full">
-              <option :value="cat" v-for="cat in category" placeholder="Select a category">{{ cat }}</option>
-            </select>
-            </div>
-            <div class="form-group">
-              <Label for="parent">Parent</Label>
-              <Input id="parent" class="mt-2" placeholder="parent" type="text" v-model="parent" />
-            </div>
-            <div class="form-group">
-              <Label for="icon">Icon</Label>
-              <Input id="icon" class="mt-2" placeholder="icon" type="text" v-model="icon" />
-            </div>
-            <div class="form-group">
-              <Label for="url">Url</Label>
-              <Input id="url" class="mt-2" placeholder="url" type="text" v-model="url" />
-            </div>
-            <div class="form-group">
-              <Label for="short_order">Short</Label>
-              <Input id="short_order" class="mt-2" placeholder="short" type="text" v-model="short_order" />
+          <!-- Content -->
+          <div class="content">
+            
+            <div class="form-container">
+              <!-- Form fields here -->
+              <div class="form-group">
+                <Label for="category">Category</Label>
+                <!-- <Input id="category" class="mt-2" placeholder="category" type="text" v-model="category" /> -->
+                <select id="selectedCategory" v-model="selectedCategory" class="mt-2 border rounded p-2 w-full" >
+                  <option value="" disabled>Select a category</option>
+                  <option :value="cat" v-for="cat in category" placeholder="Select a category">{{ cat }}</option>
+                </select>
+              </div>
+              <div class="form-group" v-if="selectedCategory != 'Header'">
+                <select id="selectedCategory" v-model="parent" class="mt-2 border rounded p-2 w-full">
+                  <option value="" disabled>Select a parent</option>
+                  <option :value="parent.id" v-for="parent in parentList">{{ parent.name }}</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <Label for="name">Menu Name</Label>
+                <FormInput 
+                  id="name" 
+                  name="Menu Name" 
+                  placeholder="name" 
+                  type="text" 
+                  v-model="name" 
+                  :required="true"/>
+              
+              </div>
+
+              <div class="form-group">
+                <Label for="icon">Icon</Label>
+                <FormInput 
+                  id="icon" 
+                  name="Icon" 
+                  placeholder="icon" 
+                  type="text" 
+                  v-model="icon" />
+              </div>
+              <div class="form-group">
+                <Label for="url">Url</Label>
+                <FormInput 
+                  id="url" 
+                  name="Url" 
+                  placeholder="url" 
+                  type="text" 
+                  v-model="url" />
+              </div>
+              <div class="form-group">
+                <Label for="short_order">Short</Label>
+                <FormInput 
+                  id="short_order" 
+                  name="Short" 
+                  placeholder="short" 
+                  type="number" 
+                  v-model="short_order" />
+              </div>
             </div>
           </div>
-        </div>
 
-        <!-- Footer -->
-        <div class="footer flex flex-col md:flex-row w-full mb-6 p-4 bg-white">
-          <Button class="w-full md:w-1/2 mb-3 md:mb-0 bg-gray-800 hover:bg-gray-600 text-white" type="submit">
-            <FeatherIcon icon="pocket" class="mr-3"/> Submit
-          </Button>
-          <Button variant="outline" class="w-full md:w-1/2 md:ml-3">
-            <p class="text text-sm text-gray-800">Reset</p>
-          </Button>
-        </div>
+          <!-- Footer -->
+          <div class="footer flex flex-col md:flex-row w-full mb-6 p-4 bg-white">
+            <Button class="w-full md:w-1/2 mb-3 md:mb-0 bg-gray-800 hover:bg-gray-600 text-white" type="submit" @click.stop="submitForm" :disabled="!isFormValid">
+              <FeatherIcon icon="pocket" class="mr-3"/> Submit
+            </Button>
+            <Button variant="outline" class="w-full md:w-1/2 md:ml-3" @click.stop="resetForm">
+              <p class="text text-sm text-gray-800">Reset</p>
+            </Button>
+          </div>
 
-
-      </div>
-
-      
 
       </div>
-
-      
-
+      </div>
     </Sidebar>
   </div>
 </template>
 
 <script>
 import Sidebar from '@/Components/SidebarTemplate.vue';
-import { Input } from '@/Components/ui/input'
+import FormInput from "../../Components/ValidateProvider.vue";
+// import { Input } from '@/Components/ui/input'
 import { Label } from '@/Components/ui/label'
 import FeatherIcon from '../../Components/FeatherIcon.vue';
 import { Button } from '@/Components/ui/button'
@@ -104,20 +130,38 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/Components/ui/select'
+import {
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/Components/ui/form';
+import { useNotification } from "@kyvg/vue3-notification";
+
+const { notify }  = useNotification()
 
 export default {
   components: {
     Sidebar,
-    Input,
+    // Input,
     Label,
     Button,
     VueSpinner,
     FeatherIcon,
     Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+    FormControl,
+    FormDescription,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+    FormInput
   },
   props: {
     isOpen: Boolean,
@@ -128,6 +172,7 @@ export default {
   },
   data(){
       return{
+          id:"",
           name:"",
           category:["Header","Parent","Submenu"],
           selectedCategory:"",
@@ -135,7 +180,10 @@ export default {
           icon:"",
           url:"",
           short_order:"",
-          isSidebarActive : true
+          isSidebarActive : true,
+          splash:false,
+          parentList : [],
+          // formData: new FormData(),
 
       }
   },
@@ -162,12 +210,89 @@ export default {
                     (item) => item.id === category
                 )[0];
             }
-        },
+    },
+    selectedCategory(){
+      this.getParent(this.selectedCategory)
+    }
+  },
+  computed:{
+    isFormValid(){
+      return (
+        this.name != "",
+        this.selectedCategory !="",
+        this.selectedCategory != "Header" ? this.parent != "" : this.parent ==""
+        
+      );
+    }
   },
   methods: {
+    resetForm(){
+          this.id = "",
+          this.name = "",
+          this.selectedCategory = "",
+          this.parent = "",
+          this.icon = "",
+          this.url = "",
+          this.short_order = ""
+          // this.formData = new FormData();
+    },
     closeSidebar() {
+      this.resetForm();
       this.$emit('update:isOpen', false); // Emit event untuk mengubah state di komponen parent
-    }
+    },
+    getParent(){
+      // const obj = {
+      //   category: cat
+      // };
+      // this.splash = true
+      //   this.$store.dispatch("menuManagement/getParent", obj).then((response)=>{
+      //       this.splash = false
+      //   });
+      // console.log(this.$store.state.menuManagement.datas)
+      let cat = null
+      this.selectedCategory == 'Parent' ? cat = 'Header' : cat = 'Parent'
+      // console.log(cat)
+      this.parentList = this.$store.state.menuManagement.datas.filter(menu => menu.category == cat)
+      // console.log(this.parentList)
+    },
+    async submitForm() {
+      const formData = new FormData()
+      const user = JSON.parse(localStorage.getItem('userData'));
+      // console.log(user.id)
+      
+
+      formData.append('id', this.id)
+      formData.append('category', this.selectedCategory)
+      formData.append('parent_id', this.parent)
+      formData.append('name', this.name)
+      formData.append('icon', this.icon)
+      formData.append('url', this.url)
+      formData.append('short_order', this.short_order)
+      formData.append('user_id', user.id)
+      const id = this.id
+     
+      try{
+        const result =await this.$store.dispatch("menuManagement/process", {formData,id})
+        if(result.data){
+          this.closeSidebar()
+          notify(
+          {
+            title: "Success",
+            text: "Data has been " + (!this.id ? "added" : "updated"),
+            type: 'success',
+            duration: 2000
+          });
+        }
+         
+      }catch(error){
+          console.error('Error saving item:', error);
+          notify({
+            title: "Error!",
+            text: error.response.data.message,
+            type: 'error',
+          });
+      }
+    },
   }
 }
 </script>
@@ -184,7 +309,7 @@ export default {
 }
 
 .content {
-max-height: 75vh; /* Sesuaikan dengan kebutuhan */
+max-height: 70vh; /* Sesuaikan dengan kebutuhan */
 overflow-y: auto;
 scrollbar-width: thin;
 scrollbar-color: #4a5568 transparent;
