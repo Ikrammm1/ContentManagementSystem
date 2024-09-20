@@ -24,6 +24,10 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanc
 
 Route::post('/menu-management/menuList', [MenuController::class, 'index']);
 Route::post('/menu-management/list', [MenuController::class, 'getMenuAuth']);
+Route::post('/menu-management/getParent/{cat}', [MenuController::class, 'getParent']);
+Route::post('/menu-management/add/', [MenuController::class, 'store']);
+Route::post('/menu-management/delete/', [MenuController::class, 'delete']);
+
 
 
 

@@ -17,6 +17,19 @@ import DataTable from 'datatables.net-vue3';
 import DataTablesCore from 'datatables.net';
 import VueSweetalert2 from 'vue-sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
+import { defineRule, Form, Field, ErrorMessage } from 'vee-validate';
+import { required, email } from '@vee-validate/rules';
+// Jika Anda ingin mengimpor CSS di main.js
+import 'vue-good-table-next/dist/vue-good-table-next.css';
+
+
+
+// import the styles
+import 'vue-good-table/dist/vue-good-table.css'
+
+
+defineRule('required', required);
+defineRule('email', email);
 
 
 const optionsSwal = {
@@ -24,7 +37,6 @@ const optionsSwal = {
     cancelButtonColor: '#ff7674',
   };
 
- 
 DataTable.use(DataTablesCore);
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
@@ -43,7 +55,7 @@ createInertiaApp({
             .use(ZiggyVue)
             .component('DataTable', DataTable) 
             .use(VueSweetalert2, optionsSwal)
-            .mount(el);
+            .mount(el)
     },
     progress: {
         color: '#4B5563',
