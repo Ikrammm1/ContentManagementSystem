@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-row">
+  <div class="flex flex-row  bg-gray-200">
     <nav-menu 
       :menu="menu" 
       :user="user"  
@@ -48,8 +48,8 @@ export default {
       this.isSidebar = isOpen;
     },
     handleResize() {
-      // Menutup sidebar jika lebar layar berada di bawah ukuran col-md (768px)
-      this.isSidebar = window.innerWidth >= 768;
+      // Menutup sidebar jika lebar layar berada di bawah ukuran col-md (769px)
+      this.isSidebar = window.innerWidth >= 769;
     }
   },
   created() {

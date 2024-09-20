@@ -44,14 +44,12 @@ class AuthorizationGroup extends Model
                     ->where('cms_menus.category', 'submenu');
     }
 
-    // public function User()
-    // {
-    //     return $this->belongsToMany(
-    //         'App\Models\UserAuthGroup',
-    //         'cms_user_auth_groups',
-    //         'group_id',
-    //         'user_id',
-    //         'id',
-    //     );
-    // }
+    public function Users()
+    {
+        return $this->belongsToMany(
+            User::class, 
+            'cms_user_auth_groups', 
+            'group_id', 
+            'user_id');
+    }
 }

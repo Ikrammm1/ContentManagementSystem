@@ -47,7 +47,7 @@ class AuthController extends Controller
                 'id' => $headerMenu->id,
                 "name"=> $headerMenu->name,
                 "url"=> $headerMenu->url,
-                "short_order"=> $headerMenu->short_order,
+                "sort_order"=> $headerMenu->sort_order,
                 "icon"=> $headerMenu->icon,
                 "category"=> $headerMenu->category,
                 'items' => $parentMenus->where('parent_id', $headerMenu->id)->map(function ($parentMenu) use ($subMenus) {
@@ -55,7 +55,7 @@ class AuthController extends Controller
                         'id' => $parentMenu->id,
                         "name"=> $parentMenu->name,
                         "url"=> $parentMenu->url,
-                        "short_order"=> $parentMenu->short_order,
+                        "sort_order"=> $parentMenu->sort_order,
                         "icon"=> $parentMenu->icon,
                         "category"=> $parentMenu->category,
                         'submenu' => $subMenus->where('parent_id', $parentMenu->id)->map(function ($subMenu) {

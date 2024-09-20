@@ -9,11 +9,11 @@ class Menu extends Model
 {
     protected $table = 'cms_menus';
     protected $fillable = [
-        'name', 'url', 'parent_id', 'short_order', 'userId', 'icon','category'
+        'name', 'url', 'parent_id', 'sort_order', 'userId', 'icon','category'
     ];
     public function Items()
     {
-        return $this->hasMany(static::class, 'parent_id')->where('category', 'parent')->orderBy('short_order', 'asc');
+        return $this->hasMany(static::class, 'parent_id')->where('category', 'parent')->orderBy('sort_order', 'asc');
     }
 
     public function Parent()
@@ -23,7 +23,7 @@ class Menu extends Model
 
     public function Submenu()
     {
-        return $this->hasMany(static::class, 'parent_id')->where('category', 'Submenu')->orderBy('short_order', 'asc')->with('Submenu');
+        return $this->hasMany(static::class, 'parent_id')->where('category', 'Submenu')->orderBy('sort_order', 'asc')->with('Submenu');
     }
 
     public function MenuAuthGroup()

@@ -1,7 +1,6 @@
 <!-- src/components/SidebarMain.vue -->
 <template>
-   <div class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-9999 "
-   v-if="splash"></div>
+  <div class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-9999 " v-if="splash"></div>
   <div>
     <!-- Overlay dengan efek fade -->
     <transition name="fade" appear>
@@ -37,9 +36,9 @@
           <!-- Content -->
           <div class="content">
             
-            <div class="form-container">
+            <div class="form-container mb-6">
               <!-- Form fields here -->
-              <div class="form-group">
+              <div class="form-group mb-2">
                 <Label for="category">Category</Label>
                 <!-- <Input id="category" class="mt-2" placeholder="category" type="text" v-model="category" /> -->
                 <select id="selectedCategory" v-model="selectedCategory" class="mt-2 border rounded p-2 w-full" >
@@ -47,14 +46,15 @@
                   <option :value="cat" v-for="cat in category" placeholder="Select a category">{{ cat }}</option>
                 </select>
               </div>
-              <div class="form-group" v-if="selectedCategory != 'Header'">
+              <div class="form-group mb-2" v-if="selectedCategory != 'Header'">
+                <Label for="parent">Parent</Label>
                 <select id="selectedCategory" v-model="parent" class="mt-2 border rounded p-2 w-full">
                   <option value="" disabled>Select a parent</option>
                   <option :value="parent.id" v-for="parent in parentList">{{ parent.name }}</option>
                 </select>
               </div>
 
-              <div class="form-group">
+              <div class="form-group mb-2">
                 <Label for="name">Menu Name</Label>
                 <FormInput 
                   id="name" 
@@ -66,7 +66,7 @@
               
               </div>
 
-              <div class="form-group">
+              <div class="form-group mb-2">
                 <Label for="icon">Icon</Label>
                 <FormInput 
                   id="icon" 
@@ -75,7 +75,7 @@
                   type="text" 
                   v-model="icon" />
               </div>
-              <div class="form-group">
+              <div class="form-group mb-2">
                 <Label for="url">Url</Label>
                 <FormInput 
                   id="url" 
@@ -85,13 +85,13 @@
                   v-model="url" />
               </div>
               <div class="form-group">
-                <Label for="short_order">Short</Label>
+                <Label for="sort_order">Sort</Label>
                 <FormInput 
-                  id="short_order" 
-                  name="Short" 
-                  placeholder="short" 
-                  type="number" 
-                  v-model="short_order" />
+                  id="sort_order" 
+                  name="sort_order" 
+                  placeholder="sort_order" 
+                  type="text"
+                  v-model="sort_order" />
               </div>
             </div>
           </div>
@@ -179,7 +179,7 @@ export default {
           parent:"",
           icon:"",
           url:"",
-          short_order:"",
+          sort_order:"",
           isSidebarActive : true,
           splash:false,
           parentList : [],
@@ -197,21 +197,32 @@ export default {
                     name,
                     url,
                     icon,
-                    short_order,
-                    category
+                    sort_order,
+                    category,
+                    parent
                 } = JSON.parse(JSON.stringify(this.data));
                 this.id = id;
                 this.name = name;
                 this.url = url;
                 // this.lastStock = last_stock
                 this.icon = icon;
-                this.short_order = short_order;
+                this.sort_order = sort_order;
                 this.selectedCategory = this.category.filter(
-                    (item) => item.id === category
+                    (item) => item == category
                 )[0];
+                // console.log(parent.id)
+                this.selectedCategory != "Header" ?
+                  this.parent = this.$store.state.menuManagement.datas.filter(
+                    (item) => item.id = parent.id
+                  )[0].id
+                  : ""
+                // console.log( this.parent)
             }
     },
     selectedCategory(){
+      if(this.selectedCategory == 'Header'){
+        this.parent = ''
+      }
       this.getParent(this.selectedCategory)
     }
   },
@@ -233,7 +244,7 @@ export default {
           this.parent = "",
           this.icon = "",
           this.url = "",
-          this.short_order = ""
+          this.sort_order = null
           // this.formData = new FormData();
     },
     closeSidebar() {
@@ -241,21 +252,16 @@ export default {
       this.$emit('update:isOpen', false); // Emit event untuk mengubah state di komponen parent
     },
     getParent(){
-      // const obj = {
-      //   category: cat
-      // };
-      // this.splash = true
-      //   this.$store.dispatch("menuManagement/getParent", obj).then((response)=>{
-      //       this.splash = false
-      //   });
-      // console.log(this.$store.state.menuManagement.datas)
+
       let cat = null
       this.selectedCategory == 'Parent' ? cat = 'Header' : cat = 'Parent'
       // console.log(cat)
-      this.parentList = this.$store.state.menuManagement.datas.filter(menu => menu.category == cat)
+      this.parentList = this.$store.state.menuManagement.datas
+      // this.parentList = this.$store.state.menuManagement.datas.filter(menu => menu.category == cat)
       // console.log(this.parentList)
     },
     async submitForm() {
+      // console.log(this.parent)
       const formData = new FormData()
       const user = JSON.parse(localStorage.getItem('userData'));
       // console.log(user.id)
@@ -267,12 +273,13 @@ export default {
       formData.append('name', this.name)
       formData.append('icon', this.icon)
       formData.append('url', this.url)
-      formData.append('short_order', this.short_order)
+      formData.append('sort_order', this.sort_order)
       formData.append('user_id', user.id)
       const id = this.id
      
       try{
         const result =await this.$store.dispatch("menuManagement/process", {formData,id})
+        console.log(result)
         if(result.data){
           this.closeSidebar()
           notify(
@@ -288,7 +295,8 @@ export default {
           console.error('Error saving item:', error);
           notify({
             title: "Error!",
-            text: error.response.data.message,
+            // text: error.response.data.message,
+            text: error,
             type: 'error',
           });
       }
@@ -356,9 +364,9 @@ background-color: transparent;
   flex-direction: column;
 }
 
-.form-group {
+/* .form-group {
   margin-bottom: 1rem;
-}
+} */
 
 /* .select-dropdown {
   position: sticky;

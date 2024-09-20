@@ -55,7 +55,7 @@ class MenuController extends Controller
                 'id' => $headerMenu->id,
                 "name"=> $headerMenu->name,
                 "url"=> $headerMenu->url,
-                "short_order"=> $headerMenu->short_order,
+                "sort_order"=> $headerMenu->sort_order,
                 "icon"=> $headerMenu->icon,
                 "category"=> $headerMenu->category,
                 'items' => $parentMenus->where('parent_id', $headerMenu->id)->map(function ($parentMenu) use ($subMenus) {
@@ -63,7 +63,7 @@ class MenuController extends Controller
                         'id' => $parentMenu->id,
                         "name"=> $parentMenu->name,
                         "url"=> $parentMenu->url,
-                        "short_order"=> $parentMenu->short_order,
+                        "sort_order"=> $parentMenu->sort_order,
                         "icon"=> $parentMenu->icon,
                         "category"=> $parentMenu->category,
                         "isOpen"=>false,
@@ -101,7 +101,7 @@ class MenuController extends Controller
                             'name' =>$request->name,
                             'icon' =>$request->icon,
                             'url' =>$request->url,
-                            'short_order' =>$request->short_order,
+                            'sort_order' =>$request->sort_order,
                             'userId' =>$request->user_id,
                         ]);
                 });
@@ -117,14 +117,51 @@ class MenuController extends Controller
         }
        
     }
+
+    public function update(Request $request)
+    {
+        $request->validate([
+            'category'=>'required',
+            'name'=>'string',
+            'user_id'=>'string'
+        ]);
+        // dd($request);
+        $update = null;
+        try{    
+            DB::transaction(function () use ($request, &$update) {
+                $update = Menu::whereId($request->id)->update([
+                    'category' =>$request->category,
+                    'parent_id' =>$request->parent_id,
+                    'name' =>$request->name,
+                    'icon' =>$request->icon,
+                    'url' =>$request->url,
+                    'sort_order' =>$request->sort_order,
+                    'userId' =>$request->user_id,
+                ]);
+            });
+            $data = Menu::with('parent')->whereId($request->id)->first();
+            return response()->json(['success'=>true, 'datas'=>$data], 200);
+
+        }catch(Throwable $e){
+            return response()->json(['success'=>false, 'message'=>$e],400);
+        }
+    }
     
     public function delete(Request $request)
     {
        try{ // dd($request->id);
         $data = Menu::find($request->id);
+        $child = Menu::whereParentId($data->id)->get();
         // dd($data);
         $data->delete();
-        return response()->json(['status'=> true, 'message'=>'success'],200);
+        $id = [];
+        foreach($child as $a){
+            $id[] = $a->id;
+            $a->delete();
+        }
+        $id[] = intval($request->id);
+        // dd($id);
+        return response()->json(['status'=> true, 'id'=>$id, 'message'=>'success'],200);
 
         }catch(Throwable $e){
             return response()->json(['status'=> false, 'message'=>$e],400);
