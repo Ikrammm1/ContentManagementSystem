@@ -38,31 +38,14 @@ const mutations = {
 };
 
 const actions = {
-  authlist({ commit }, data) {
-    // console.log(data)
-    return new Promise((resolve, reject) => {
-      axios.post('/api/menu-management/list', data, {
-        headers: {
-            'Content-Type': 'multipart/form-data'
-        }
-      })
-        .then(response => {       
-          commit('SET_MENUS', response.data.menus)           
-          resolve(response.data.menus);
-        })
-        .catch(error => {
-          reject(error);
-        });
-    });
-  },
   async list({ commit }) {
     try{
-      const response = await axios.post('/api/menu-management/menuList', {
+      const response = await axios.post('/api/authorization-group/list', {
         headers: {
             'Content-Type': 'multipart/form-data'
         }
       })
-      commit('SET_ITEMS', response.data)
+      commit('SET_ITEMS', response.data.datas)
       return response
     }catch(error){
       throw error

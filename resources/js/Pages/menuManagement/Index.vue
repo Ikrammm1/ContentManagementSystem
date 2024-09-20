@@ -6,94 +6,29 @@
   <data-sidebar :isOpen="isSidebarOpen" @update:isOpen="isSidebarOpen = $event" :data="sidebarData"/>
     <div class="w-full h-full bg-slate-200 p-10">
         <h1 class="text text-left mb-10 uppercase text-2xl leading-6">Menu Management</h1>
-        <div class="flex flex-row w-full items-center justify-end">
-            <div class="w-full">
-                <Button @click="addNewData" class=" bg-gray-800 hover:bg-gray-600 items-center text-white mb-3" type="submit">
-                <FeatherIcon icon="plus"/> Add New
-            </Button>
-            </div>
-            <div class="flex flex-row w-2/5">
-                <div class="flex flex-row items-center justify-start w-full custom-search-input">
-                    <FeatherIcon icon="search"/>
-                    <input
-                    type="text"
-                    class="ml-2 w-full input-group"
-                    v-model="searchQuery"
-                    placeholder="Search data"
-                    />
-                </div>
-               
-            </div>
-           
-            
-        </div>
+        <div class="flex flex-col md:flex-row w-full items-center justify-end md:justify-start mb-4">
+    <!-- Button Add New -->
+    <div class="flex flex-col md:flex-row w-1/2 md:w-full mb-4 md:mb-0 md:mr-4">
+        <Button @click="addNewData" class="bg-gray-800 hover:bg-gray-600 items-center text-white" type="submit">
+            <FeatherIcon icon="plus"/> 
+            <span class="hidden sm:inline-flex ml-2">
+                Add New
+            </span>
+        </Button>
+    </div>
+    <!-- Input pencarian -->
+    <div class="flex flex-row items-center w-1/2 mb-4 md:mb-0 custom-search-input">
+        <FeatherIcon icon="search"/>
+        <input
+            type="text"
+            class="ml-2 input-group w-full"
+            v-model="searchQuery"
+            placeholder="Search data"
+        />
+    </div>
+</div>
         
-            <div class="overflow-x-auto">
-             <!-- <DataTable class="display bg-white"  v-if="datas">
-                <thead>
-                    <tr>
-                        <th v-for="(header, index) in headers" :key="index">{{ header }}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <slot :data="datas">
-                    <tr v-for="(data, index) in datas" :key="index">
-                        <td>{{ data.name }}</td>
-                        <td>{{ data.url ? data.url : '-' }}</td>
-                        <td>{{ data.parent ? data.parent.name : '-' }}</td>
-                        <td class="flex flex-row items-cente">
-                            <button class="flax flax-col w-1/2  hover:text-blue-800"@click.stop="editData(data)">
-                            <feather-icon icon="edit" />
-                            </button>
-                            <button class="flax flax-col w-1/2 hover:text-red-500"  @click.stop="deleteData(data.id)" >
-                                <feather-icon icon="trash-2" />
-                            </button>
-
-                        </td>
-                    </tr>
-                </slot>
-                </tbody>
-            </DataTable> -->
-        
-            <!-- <DataTable class="display bg-white" v-if="datas"> -->
-            <!-- <div class="display bg-white p-4">
-                <CustomTable :data="datas" ref="table">
-                    <template #thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>URL</th>
-                            <th>Parent</th>
-                            <th>Action</th>
-                        </tr>
-                    </template>
-
-                    <template #tbody="{ data }">
-                        <tr :data="item" v-for="(item, index) in data" :key="index" >
-                            <td>
-                                <span class="truncate">{{ item.name }}</span>
-                            </td>
-                            <td>
-                                <span class="truncate">{{ item.url }}</span>
-                            </td>
-                            <td>
-                                <span class="truncate">{{ item.parent ? item.parent.name : '-' }}</span>
-                            </td>
-                            <td class="flex flex-row items-cente">
-                                <button class="flax flax-col w-1/2  hover:text-blue-800"@click.stop="editData(item)">
-                                <feather-icon icon="edit" />
-                                </button>
-                                <button class="flax flax-col w-1/2 hover:text-red-500"  @click.stop="deleteData(item.id)" >
-                                    <feather-icon icon="trash-2" />
-                                </button>
-
-                            </td>
-                        </tr>
-                    </template>
-                </CustomTable>
-            </div> -->
-                
-            <!-- </DataTable> -->
-            
+            <div class="overflow-x-auto">            
             <vue-good-table
                 v-if="datas"
                 :columns="columns"
@@ -129,6 +64,7 @@
                     </span>
                 </template>
             </vue-good-table>
+            
         </div>
     </div>
     
@@ -152,7 +88,6 @@ const { notify }  = useNotification()
 export default {
     data() {
         return {
-            headers: ['Name', 'URL', 'Parent', 'Action'],
             splash:false,
             isSidebarOpen: false,
             searchQuery:null,
@@ -230,7 +165,7 @@ export default {
         },
         deleteData(id){
             const formData = new FormData();
-            formData.append("id", id);
+            formData.append('id', id);
             // console.log(id)
 
             this.$swal({
@@ -295,7 +230,7 @@ export default {
   padding: 8px;
   border: 1px solid #ddd;
   border-radius: 10px;
-  width: 100%;
+  /* width: auto; */
   background-color: white;
 }
 .input-group:focus {

@@ -24,7 +24,7 @@
     top: 0;
     right: 0;
     width: auto; /* Lebar otomatis berdasarkan konten */
-    min-width: 500px; /* Atur batas lebar maksimum jika diperlukan */
+    min-width: 400px; /* Atur batas lebar maksimum jika diperlukan */
     height: 100%;
     background: white;
     display: flex;
